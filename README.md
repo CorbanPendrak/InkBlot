@@ -9,17 +9,20 @@ InkBlot -> Message in a conversation
 ## Todo
 - [x] Setup repo
 - [x] Create mockup
-- [ ] Reset and close buttons
+- [x] Reset and close buttons
 - [ ] Style mockup
   - [ ] Avatar
+  - [ ] Buttons
 - [ ] Add animations
   - [ ] Paper expanding
   - [ ] InkBlot typing
-  - [ ] Loading for long InkBlots?
+  - [ ] Loading for long InkBlots
   - [ ] Scrolling
-- [ ] Improve styling configuration
+  - [ ] Reset/close buttons
+  - [ ] Avatar thinking
 - [ ] Configure webpack
 - [ ] Connect Ink backend
+- [ ] Improve styling configuration
 - [ ] Implement easy installation
   - [ ] Library
   - [ ] CDN
