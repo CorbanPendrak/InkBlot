@@ -24,7 +24,10 @@ Idea: Name the whole project Lil' InkBlot?
   - [ ] Reset/close buttons
   - [ ] Avatar thinking
 - [ ] Configure webpack
-- [ ] Connect Ink backend
+- [ ] Ink
+  - [ ] Connect Ink backend
+  - [ ] Compile ink
+- [ ] Link macros
 - [ ] Improve styling configuration
 - [ ] Fullscreen mode
 - [ ] Implement easy installation
