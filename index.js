@@ -7,13 +7,13 @@ function updateMessages(newMessages, messagesElement) {
         console.log(((newMessages[i].isButton) ? "- " : "") + newMessages[i].text);
         if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
             const avatar = document.createElement("img");
-            avatar.style = "border-radius: 100%; \
-                width: 50px; \
-                aspect-ratio: 1; \
-                height: 50px; \
-                border: 2px solid #000; \
-                box-shadow: 4px 4px 0 #000; \
-                margin-bottom: 6px;"; 
+            avatar.style = `border-radius: 100%;
+                width: 50px;
+                aspect-ratio: 1;
+                height: 50px;
+                border: 2px solid #000;
+                box-shadow: 4px 4px 0 #000;
+                margin-bottom: 6px;`; 
             avatar.src = inkBlotImage; //"media/inkblot-" + (Math.floor(Math.random() * 6) + 1) + ".png";
             messagesElement.appendChild(avatar);
         }
@@ -31,12 +31,12 @@ function createInkBlot(text, messages=[]) {
     if (messages.length) {
         isButton = true;
         element.classList.add("button");
-        element.style = "width: fit-content; \
-            max-width: 95%; \
-            padding: 1em; \
-            margin-bottom: 0.5em; \
-            align-self: flex-end;";
-        element.addEventListener("click", () => {
+        element.style = `width: fit-content;
+            max-width: 95%;
+            padding: 1em;
+            margin-bottom: 0.5em;
+            align-self: flex-end;`;
+        function callBack() {
             if (isButton) {
                 // Remove other user options
                 var sibling = element.nextSibling;
@@ -59,14 +59,15 @@ function createInkBlot(text, messages=[]) {
 
                 updateMessages(messages, element.parentElement);
                 element.classList.remove("button");
-                isButton = false;
+                this.removeEventListener("click", callBack);
             }
-        });
+        }
+        element.addEventListener("click", callBack);
     } else {
-        element.style = "width: fit-content; \
-            max-width: 95%; \
-            padding: 1em; \
-            margin-bottom: 0.5em;";
+        element.style = `width: fit-content;
+            max-width: 95%;
+            padding: 1em;
+            margin-bottom: 0.5em;`;
     }
 
     return {text, element, isButton};
@@ -77,36 +78,36 @@ function createPaper() {
     const body = document.querySelector("body");
     const paper = document.createElement("div");
     paper.classList.add("box");
-    paper.style = "width: min(500px, 90vw); \
-        height: min(500px, 90vh); \
-        position: fixed; \
-        bottom: calc(1rem + 16px); \
-        right: 16px; \
-        z-index: 1000; \
-        background-color: #fff; \
-        display: flex; \
-        flex-direction: column; \
-        margin-bottom: 0;";
+    paper.style = `width: min(500px, 90vw);
+        height: min(500px, 90vh);
+        position: fixed;
+        bottom: calc(1rem + 16px);
+        right: 16px;
+        z-index: 1000;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;`;
     body.appendChild(paper);
 
     // Title
     const titleBar = document.createElement("div");
-    titleBar.style = "display: flex; \
-        justify-content: space-between; \
-        padding: 0 0.5em;";
+    titleBar.style = `display: flex;
+        justify-content: space-between;
+        padding: 0 0.5em;`;
 
     const title = document.createElement("div");
     title.textContent = titleText;
-    title.style = "text-align: center; \
-        font-weight: 700; \
-        font-size: 1.5em;";
+    title.style = `text-align: center;
+        font-weight: 700;
+        font-size: 1.5em;`;
     titleBar.appendChild(title);
 
     // Reset/Close buttons
     const chatButtons = document.createElement("div");
-    chatButtons.style = "display: flex; \
-        gap: 10px; \
-        font-size: 1.5em;"
+    chatButtons.style = `display: flex;
+        gap: 10px;
+        font-size: 1.5em;`;
     const refresh = document.createElement("img");
     refresh.src = "media/refresh.svg";
     refresh.style.width = "1.2em";
@@ -128,21 +129,52 @@ function createPaper() {
 
     // Separation bar
     const bar = document.createElement("hr");
-    bar.style = "border-radius: 0; \
-        border: 2px solid #000; \
-        margin: 10px 0;";
+    bar.style = `border-radius: 0;
+        border: 2px solid #000;
+        margin: 10px 0;`;
     paper.appendChild(bar);
 
     // Message area
     const messagesElement = document.createElement("div");
     messagesElement.classList.add("box");
-    messagesElement.style = "overflow: auto; \
-        flex-grow: 1; \
-        margin-bottom: 0; \
-        display: flex; \
-        flex-direction: column; \
-        padding-left: 0.5em;";
+    messagesElement.style = `overflow: auto;
+        flex-grow: 1;
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        padding-left: 0.5em;`;
     paper.appendChild(messagesElement);
+
+
+    /*const scrollTrack = document.createElement("div");
+    scrollTrack.style = `
+        display:
+    `;
+    messagesElement.appendChild(scrollTrack);
+    const scrollThumb = document.createElement("div");
+    scrollThumb.id = "custom-scroll-thumb";
+    scrollThumb = `
+        transition: height 300ms ease;
+    `;
+    scrollTrack.appendChild(scrollThumb);
+    */
+    const scrollbarStyle = document.createElement("style");
+    scrollbarStyle.innerHTML = `
+        ::-webkit-scrollbar {
+            width: 5px; 
+        }
+        ::-webkit-scrollbar-track {
+            background: #fff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #000;
+            border-radius: 0;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #000;
+        }
+    `;
+    paper.appendChild(scrollbarStyle);
 
     // Add intro message
     function start() {
@@ -187,15 +219,15 @@ function createChat() {
     const chat = document.createElement("img");
     chat.src = inkBlotImage;
     chat.classList.add("button");
-    chat.style = "border-radius: 100;\
-        position: fixed; \
-        bottom: calc(16px + 1.5rem); \
-        right: calc(16px + 0.5rem); \
-        width: 75px; \
-        padding: 0; \
-        z-index: 1000; \
-        border-radius: 100%; \
-        aspect-ratio: 1;";
+    chat.style = `border-radius: 100;
+        position: fixed;
+        bottom: calc(16px + 1.5rem);
+        right: calc(16px + 0.5rem);
+        width: 75px;
+        padding: 0;
+        z-index: 1000;
+        border-radius: 100%;
+        aspect-ratio: 1;`;
     body.appendChild(chat);
 
     chat.addEventListener("click", () => {

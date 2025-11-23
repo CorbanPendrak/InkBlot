@@ -14,12 +14,13 @@ Idea: Name the whole project Lil' InkBlot?
 - [ ] Style mockup
   - [x] Avatar
   - [x] Buttons
-  - [ ] Scrollbar
+  - [x] Scrollbar
 - [ ] Add animations
   - [ ] Paper expanding
   - [ ] InkBlot typing
   - [ ] Loading for long InkBlots
   - [ ] Scrolling
+  - [ ] Custom scrollbar height
   - [ ] Reset/close buttons
   - [ ] Avatar thinking
 - [ ] Configure webpack
