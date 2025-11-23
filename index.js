@@ -1,9 +1,22 @@
 // InkChat code
 const titleText = "InkChat";
+const inkBlotImage = "media/inkblot-5.png";
 
 function updateMessages(newMessages, messagesElement) {
     for (var i = 0; i < newMessages.length; i++) {
         console.log(((newMessages[i].isButton) ? "- " : "") + newMessages[i].text);
+        if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
+            const avatar = document.createElement("img");
+            avatar.style = "border-radius: 100%; \
+                width: 50px; \
+                aspect-ratio: 1; \
+                height: 50px; \
+                border: 2px solid #000; \
+                box-shadow: 4px 4px 0 #000; \
+                margin-bottom: 6px;"; 
+            avatar.src = inkBlotImage; //"media/inkblot-" + (Math.floor(Math.random() * 6) + 1) + ".png";
+            messagesElement.appendChild(avatar);
+        }
         messagesElement.appendChild(newMessages[i].element);
     }
     messagesElement.scrollTop = messagesElement.scrollHeight;
@@ -125,7 +138,8 @@ function createPaper() {
         flex-grow: 1; \
         margin-bottom: 0; \
         display: flex; \
-        flex-direction: column;";
+        flex-direction: column; \
+        padding-left: 0.5em;";
     paper.appendChild(messagesElement);
 
     // Add intro message
@@ -168,15 +182,18 @@ function createPaper() {
 
 function createChat() {
     const body = document.querySelector("body");
-    const chat = document.createElement("button");
+    const chat = document.createElement("img");
+    chat.src = inkBlotImage;
+    chat.classList.add("button");
     chat.style = "border-radius: 100;\
         position: fixed; \
         bottom: calc(16px + 1.5rem); \
         right: calc(16px + 0.5rem); \
+        width: 75px; \
+        padding: 0; \
         z-index: 1000; \
         border-radius: 100%; \
         aspect-ratio: 1;";
-    chat.textContent = "C";
     body.appendChild(chat);
 
     chat.addEventListener("click", () => {

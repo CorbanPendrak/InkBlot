@@ -11,7 +11,7 @@ InkBlot -> Message in a conversation
 - [x] Create mockup
 - [x] Reset and close buttons
 - [ ] Style mockup
-  - [ ] Avatar
+  - [x] Avatar
   - [ ] Buttons
 - [ ] Add animations
   - [ ] Paper expanding
@@ -26,4 +26,5 @@ InkBlot -> Message in a conversation
 - [ ] Implement easy installation
   - [ ] Library
   - [ ] CDN
+  - [ ] Website for customizing widget
 - [ ] Convert to Typescript
