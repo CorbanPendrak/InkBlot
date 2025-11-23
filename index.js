@@ -107,14 +107,16 @@ function createPaper() {
     chatButtons.style = "display: flex; \
         gap: 10px; \
         font-size: 1.5em;"
-    const reset = document.createElement("div");
-    reset.textContent = "R";
-    reset.addEventListener("click", () => {
+    const refresh = document.createElement("img");
+    refresh.src = "media/refresh.svg";
+    refresh.style.width = "1.2em";
+    refresh.addEventListener("click", () => {
         start();
     });
-    chatButtons.appendChild(reset);
-    const close = document.createElement("div");
-    close.textContent = "X";
+    chatButtons.appendChild(refresh);
+    const close = document.createElement("img");
+    close.src = "media/close.svg";
+    close.style.width = "1.2em";
     close.addEventListener("click", () => {
         body.removeChild(paper);
         createChat();

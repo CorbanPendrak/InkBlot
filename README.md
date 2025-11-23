@@ -5,6 +5,7 @@ This is a JavaScript library/tool to include chat functionality on a website pow
 Naming important things is fun, but here is the mapping:
 Paper -> Conversation window
 InkBlot -> Message in a conversation
+Idea: Name the whole project Lil' InkBlot?
 
 ## Todo
 - [x] Setup repo
@@ -12,7 +13,8 @@ InkBlot -> Message in a conversation
 - [x] Reset and close buttons
 - [ ] Style mockup
   - [x] Avatar
-  - [ ] Buttons
+  - [x] Buttons
+  - [ ] Scrollbar
 - [ ] Add animations
   - [ ] Paper expanding
   - [ ] InkBlot typing
@@ -23,6 +25,7 @@ InkBlot -> Message in a conversation
 - [ ] Configure webpack
 - [ ] Connect Ink backend
 - [ ] Improve styling configuration
+- [ ] Fullscreen mode
 - [ ] Implement easy installation
   - [ ] Library
   - [ ] CDN
