@@ -1,6 +1,8 @@
 // InkChat code
 const titleText = "InkChat";
-const inkBlotImage = "media/inkblot-5.png";
+import inkBlotImage from "./media/inkblot-5.png";
+import closeImage from "./media/close.svg";
+import refreshImage from "./media/refresh.svg";
 
 function updateMessages(newMessages, messagesElement) {
     for (var i = 0; i < newMessages.length; i++) {
@@ -109,14 +111,14 @@ function createPaper() {
         gap: 10px;
         font-size: 1.5em;`;
     const refresh = document.createElement("img");
-    refresh.src = "media/refresh.svg";
+    refresh.src = refreshImage;
     refresh.style.width = "1.2em";
     refresh.addEventListener("click", () => {
         start();
     });
     chatButtons.appendChild(refresh);
     const close = document.createElement("img");
-    close.src = "media/close.svg";
+    close.src = closeImage;
     close.style.width = "1.2em";
     close.addEventListener("click", () => {
         body.removeChild(paper);
