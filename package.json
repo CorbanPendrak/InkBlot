@@ -1,0 +1,25 @@
+{
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2",
+    "webpack-merge": "^6.0.1"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "dev": "webpack serve --config webpack.dev.js --port 50",
+    "clean": "rm -rf dist/",
+    "predeploy": "git checkout gh-pages && git merge master --no-edit; webpack --config webpack.prod.js",
+    "deploy": "git add dist -f && git commit -m \"Deployment commit\"; git subtree push --prefix dist origin gh-pages",
+    "postdeploy": "rm -rf dist/; git checkout master"
+  },
+  "dependencies": {
+    "inkjs": "^2.3.2",
+    "mini-css-extract-plugin": "^2.9.4"
+  }
+}

@@ -29,6 +29,7 @@ Idea: Name the whole project Lil' InkBlot?
   - [ ] Compile ink
 - [ ] Link macros
 - [ ] Improve styling configuration
+  - [ ] Optional showing user messages
 - [ ] Fullscreen mode
 - [ ] Implement easy installation
   - [ ] Library

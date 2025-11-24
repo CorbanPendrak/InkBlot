@@ -1,8 +1,18 @@
 // InkChat code
 const titleText = "InkChat";
-const inkBlotImage = "media/inkblot-5.png";
-import { storyContent } from "inkblot-index.js";
-import "ink.js";
+
+/*
+import inkBlotImage from "./media/inkblot-5.png";
+import closeImage from "./media/close.svg";
+import refreshImage from "./media/refresh.svg";
+
+import { storyContent } from "./inkblot-index.js";
+import { Story } from "./ink.js";
+*/
+
+let inkBlotImage = "./media/inkblot-5.png";
+let closeImage = "./media/close.svg";
+let refreshImage = "./media/refresh.svg";
 
 var story = new inkjs.Story(storyContent);
 let globalTagTheme;
@@ -26,100 +36,6 @@ function updateMessages(newMessages, messagesElement) {
     }
     messagesElement.scrollTop = messagesElement.scrollHeight;
 };
-
-// Detects whether the user accepts animations
-function isAnimationEnabled() {
-    return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-}
-
-// Fades in an element after a specified delay
-function showAfter(delay, el) {
-    if (isAnimationEnabled()) {
-        el.classList.add("hide");
-        setTimeout(function() { el.classList.remove("hide") }, delay);
-    } else {
-        // If the user doesn't want animations, show immediately
-        el.classList.remove("hide");
-    }
-}
-
-// Scrolls the page down, but no further than the bottom edge of what you could
-// see previously, so it doesn't go too far.
-function scrollDown(previousBottomEdge) {
-    // If the user doesn't want animations, let them scroll manually
-    if ( !isAnimationEnabled() ) {
-        return;
-    }
-
-    // Line up top of screen with the bottom of where the previous content ended
-    var target = previousBottomEdge;
-
-    // Can't go further than the very bottom of the page
-    var limit = outerScrollContainer.scrollHeight - outerScrollContainer.clientHeight;
-    if( target > limit ) target = limit;
-
-    var start = outerScrollContainer.scrollTop;
-
-    var dist = target - start;
-    var duration = 300 + 300*dist/100;
-    var startTime = null;
-    function step(time) {
-        if( startTime == null ) startTime = time;
-        var t = (time-startTime) / duration;
-        var lerp = 3*t*t - 2*t*t*t; // ease in/out
-        outerScrollContainer.scrollTo(0, (1.0-lerp)*start + lerp*target);
-        if( t < 1 ) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-}
-
-// The Y coordinate of the bottom end of all the story content, used
-// for growing the container, and deciding how far to scroll.
-function contentBottomEdgeY() {
-    var bottomElement = storyContainer.lastElementChild;
-    return bottomElement ? bottomElement.offsetTop + bottomElement.offsetHeight : 0;
-}
-
-// Remove all elements that match the given selector. Used for removing choices after
-// you've picked one, as well as for the CLEAR and RESTART tags.
-function removeAll(selector)
-{
-    var allElements = storyContainer.querySelectorAll(selector);
-    for(var i=0; i<allElements.length; i++) {
-        var el = allElements[i];
-        el.parentNode.removeChild(el);
-    }
-}
-
-// Used for hiding and showing the header when you CLEAR or RESTART the story respectively.
-function setVisible(selector, visible)
-{
-    var allElements = storyContainer.querySelectorAll(selector);
-    for(var i=0; i<allElements.length; i++) {
-        var el = allElements[i];
-        if( !visible )
-            el.classList.add("invisible");
-        else
-            el.classList.remove("invisible");
-    }
-}
-
-// Helper for parsing out tags of the form:
-//  # PROPERTY: value
-// e.g. IMAGE: source path
-function splitPropertyTag(tag) {
-    var propertySplitIdx = tag.indexOf(":");
-    if( propertySplitIdx != null ) {
-        var property = tag.substr(0, propertySplitIdx).trim();
-        var val = tag.substr(propertySplitIdx+1).trim();
-        return {
-            property: property,
-            val: val
-        };
-    }
-
-    return null;
-}
 
 function createInkBlot(text, messages=[]) {
     const element = document.createElement("div");
@@ -172,6 +88,29 @@ function createInkBlot(text, messages=[]) {
     return {text, element, isButton};
 }
 
+function createInkBlot(text, isButton=false) {
+    const element = document.createElement("div");
+    element.innerHTML = text;
+    element.classList.add("box");
+
+    if (isButton) {
+        element.classList.add("button");
+        element.classList.add("choice");
+        element.style = `width: fit-content;
+            max-width: 95%;
+            padding: 1em;
+            margin-bottom: 0.5em;
+            align-self: flex-end;`;
+    } else {
+        element.style = `width: fit-content;
+            max-width: 95%;
+            padding: 1em;
+            margin-bottom: 0.5em;`;
+    }
+
+    return {text, element, isButton};
+}
+
 // Create paper
 function createPaper() {
     const body = document.querySelector("body");
@@ -208,14 +147,14 @@ function createPaper() {
         gap: 10px;
         font-size: 1.5em;`;
     const refresh = document.createElement("img");
-    refresh.src = "media/refresh.svg";
+    refresh.src = refreshImage;
     refresh.style.width = "1.2em";
     refresh.addEventListener("click", () => {
-        start();
+        restart();
     });
     chatButtons.appendChild(refresh);
     const close = document.createElement("img");
-    close.src = "media/close.svg";
+    close.src = closeImage;
     close.style.width = "1.2em";
     close.addEventListener("click", () => {
         body.removeChild(paper);
@@ -306,8 +245,12 @@ function createPaper() {
         var paragraphIndex = 0;
         var delay = 0.0;
 
+        var previousBottomEdge = firstTime ? 0 : contentBottomEdgeY();
+
+        var newMessages = [];
         while (story.canContinue) {
             var paragraphText = story.Continue();
+            let message = createInkBlot(paragraphText);
             var tags = story.currentTags;
 
             // Special tags for this line
@@ -345,11 +288,11 @@ function createPaper() {
                 if( splitTag && splitTag.property == "IMAGE" ) {
                     var imageElement = document.createElement('img');
                     imageElement.src = splitTag.val;
-                    storyContainer.appendChild(imageElement);
+                    messagesElement.appendChild(imageElement);
 
                     imageElement.onload = () => {
                         console.log(`scrollingto ${previousBottomEdge}`)
-                        scrollDown(previousBottomEdge)
+                        //scrollDown(previousBottomEdge)
                     }
 
                     showAfter(delay, imageElement);
@@ -364,11 +307,6 @@ function createPaper() {
                 // LINKOPEN: url
                 else if( splitTag && splitTag.property == "LINKOPEN" ) {
                     window.open(splitTag.val);
-                }
-
-                // BACKGROUND: src
-                else if( splitTag && splitTag.property == "BACKGROUND" ) {
-                    outerScrollContainer.style.backgroundImage = 'url('+splitTag.val+')';
                 }
 
                 // CLASS: className
@@ -398,17 +336,19 @@ function createPaper() {
             }
 
             // Create paragraph element
-            var paragraphElement = document.createElement('p');
-            paragraphElement.innerHTML = paragraphText;
-            messagesElement.appendChild(paragraphElement);
+            //var paragraphElement = document.createElement('p');
+            //paragraphElement.innerHTML = paragraphText;
+            //messagesElement.appendChild(paragraphElement);
 
             for (var i = 0; i < customClasses.length; i++) {
-                paragraphElement.classList.add(customClasses[i]);
+                message.element.classList.add(customClasses[i]);
             }
 
+            newMessages.push(message);
+
             // Todo: fade in timer
-            showAfter(delay, paragraphElement);
-            delay += 200.0;
+            //showAfter(delay, paragraphElement);
+            //delay += 200.0;
         }
 
         // Create choices
@@ -430,6 +370,7 @@ function createPaper() {
                 }
             }
 
+            /*
             var choiceParagraphElement = document.createElement('p');
             choiceParagraphElement.classList.add('choice');
             
@@ -443,39 +384,171 @@ function createPaper() {
                 choiceParagraphElement.innerHTML = `<span class='unclickable'>${choice.text}</span>`;
             }
             messagesElement.appendChild(choiceParagraphElement);
+            */
+
+            let message = createInkBlot(choice.text, true);
+            newMessages.push(message);
 
             // Todo: fade in choices
-            showAfter(delay, choiceParagraphElement);
-            delay += 200.0;
+            //showAfter(delay, choiceParagraphElement);
+            //delay += 200.0;
 
             if (isClickable) {
-                var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
-                choiceAnchorEl.addEventListener("click", function(event) {
-                    // Don't follow <a> link
-                    event.preventDefault();
+                //var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
+                let element = message.element;
+                function callBack() {
+                // Don't follow <a> link
+                //event.preventDefault();
 
-                    // Extend height to fit
-                    // We do this manually so that removing elements and creating new ones doesn't
-                    // cause the height (and therefore scroll) to jump backwards temporarily.
-                    storyContainer.style.height = contentBottomEdgeY()+"px";
+                // Extend height to fit
+                // We do this manually so that removing elements and creating new ones doesn't
+                // cause the height (and therefore scroll) to jump backwards temporarily.
+                //messagesElement.style.height = contentBottomEdgeY()+"px";
 
-                    // Remove all existing choices
-                    removeAll(".choice");
+                // Remove all existing choices
+                //removeAll(".choice");
 
-                    // Tell the story where to go next
-                    story.ChooseChoiceIndex(choice.index);
+                // Tell the story where to go next
+                story.ChooseChoiceIndex(choice.index);
 
-                    // And loop
-                    continueStory();
-                });
+                // And loop
+                continueStory();
+
+                // Remove other user options
+                var sibling = element.nextSibling;
+                while (sibling) {
+                    if (!sibling.classList.contains("button")) {
+                        break;
+                    }
+                    element.parentElement.removeChild(sibling);
+                    sibling = sibling.nextSibling;
+                }
+
+                var sibling = element.previousSibling;
+                while (sibling) {
+                    if (!sibling.classList.contains("button")) {
+                        break;
+                    }
+                    element.parentElement.removeChild(sibling);
+                    sibling = element.previousSibling;
+                }
+
+                element.classList.remove("button");
+                this.removeEventListener("click", callBack);
+            }
+            element.addEventListener("click", callBack);
             }
         });
 
-        // Unset storyContainer's height, allowing it to resize itself
-		storyContainer.style.height = "";
+        updateMessages(newMessages, messagesElement);
 
-        if( !firstTime )
-            scrollDown(previousBottomEdge);
+        // Unset messagesElement's height, allowing it to resize itself
+		//messagesElement.style.height = "";
+
+        //if( !firstTime )
+        //    scrollDown(previousBottomEdge);
+    }
+
+    // Scrolls the page down, but no further than the bottom edge of what you could
+    // see previously, so it doesn't go too far.
+    function scrollDown(previousBottomEdge) {
+        // If the user doesn't want animations, let them scroll manually
+        if ( !isAnimationEnabled() ) {
+            return;
+        }
+
+        // Line up top of screen with the bottom of where the previous content ended
+        var target = previousBottomEdge;
+
+        // Can't go further than the very bottom of the page
+        var limit = outerScrollContainer.scrollHeight - outerScrollContainer.clientHeight;
+        if( target > limit ) target = limit;
+
+        var start = outerScrollContainer.scrollTop;
+
+        var dist = target - start;
+        var duration = 300 + 300*dist/100;
+        var startTime = null;
+        function step(time) {
+            if( startTime == null ) startTime = time;
+            var t = (time-startTime) / duration;
+            var lerp = 3*t*t - 2*t*t*t; // ease in/out
+            outerScrollContainer.scrollTo(0, (1.0-lerp)*start + lerp*target);
+            if( t < 1 ) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    // The Y coordinate of the bottom end of all the story content, used
+    // for growing the container, and deciding how far to scroll.
+    function contentBottomEdgeY() {
+        var bottomElement = messagesElement.lastElementChild;
+        return bottomElement ? bottomElement.offsetTop + bottomElement.offsetHeight : 0;
+    }
+
+    // Remove all elements that match the given selector. Used for removing choices after
+    // you've picked one, as well as for the CLEAR and RESTART tags.
+    function removeAll(selector)
+    {
+        var allElements = messagesElement.querySelectorAll(selector);
+        for(var i=0; i<allElements.length; i++) {
+            var el = allElements[i];
+            el.parentNode.removeChild(el);
+        }
+    }
+
+    // Used for hiding and showing the header when you CLEAR or RESTART the story respectively.
+    function setVisible(selector, visible)
+    {
+        var allElements = messagesElement.querySelectorAll(selector);
+        for(var i=0; i<allElements.length; i++) {
+            var el = allElements[i];
+            if( !visible )
+                el.classList.add("invisible");
+            else
+                el.classList.remove("invisible");
+        }
+    }
+
+    // Helper for parsing out tags of the form:
+    //  # PROPERTY: value
+    // e.g. IMAGE: source path
+    function splitPropertyTag(tag) {
+        var propertySplitIdx = tag.indexOf(":");
+        if( propertySplitIdx != null ) {
+            var property = tag.substr(0, propertySplitIdx).trim();
+            var val = tag.substr(propertySplitIdx+1).trim();
+            return {
+                property: property,
+                val: val
+            };
+        }
+
+        return null;
+    }
+
+    // Detects whether the user accepts animations
+    function isAnimationEnabled() {
+        return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+    }
+
+    // Fades in an element after a specified delay
+    function showAfter(delay, el) {
+        if (isAnimationEnabled()) {
+            el.classList.add("hide");
+            setTimeout(function() { el.classList.remove("hide") }, delay);
+        } else {
+            // If the user doesn't want animations, show immediately
+            el.classList.remove("hide");
+        }
+    }
+
+    function restart() {
+        messagesElement.innerHTML = "";
+        story.ResetState();
+        setVisible(".header", true);
+
+        continueStory(true);
     }
 }
 
