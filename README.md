@@ -11,7 +11,7 @@ Idea: Name the whole project Lil' InkBlot?
 - [x] Setup repo
 - [x] Create mockup
 - [x] Reset and close buttons
-- [ ] Style mockup
+- [x] Style mockup
   - [x] Avatar
   - [x] Buttons
   - [x] Scrollbar
@@ -23,8 +23,8 @@ Idea: Name the whole project Lil' InkBlot?
   - [ ] Custom scrollbar height
   - [ ] Reset/close buttons
   - [ ] Avatar thinking
-- [ ] Configure webpack
-- [ ] Ink
+- [x] Configure webpack
+- [x] Ink
   - [x] Connect Ink backend
   - [x] Compile ink
   - [x] Save compiled ink

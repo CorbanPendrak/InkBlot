@@ -23,6 +23,14 @@ try {
     } 
 }
 
+const body = document.querySelector("body");
+const paper = document.createElement("div");
+paper.classList.add("inkblotChat");
+paper.classList.add("button");
+paper.classList.add("box");
+paper.classList.add("inkblotPaper");
+body.appendChild(paper);
+
 function updateMessages(newMessages, messagesElement) {
     for (var i = 0; i < newMessages.length; i++) {
         if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
@@ -52,11 +60,14 @@ function createInkBlot(text, isButton=false) {
 
 // Create paper
 function createPaper() {
-    const body = document.querySelector("body");
-    const paper = document.createElement("div");
-    paper.classList.add("box");
+    paper.innerHTML = "";
+    paper.classList.remove("button");
+    paper.classList.remove("inkblotChat");
     paper.classList.add("inkblotPaper");
-    body.appendChild(paper);
+    paper.classList.add("box");
+    story.ResetState();
+
+    //paper.addEventListener('transitionend', onExpandDone, { once: true })
 
     // Title
     const titleBar = document.createElement("div");
@@ -81,7 +92,6 @@ function createPaper() {
     close.src = closeImage;
     close.style.width = "1.2em";
     close.addEventListener("click", () => {
-        body.removeChild(paper);
         createChat();
     })
     chatButtons.appendChild(close);
@@ -375,18 +385,18 @@ function createPaper() {
 }
 
 function createChat() {
-    const body = document.querySelector("body");
-    const chat = document.createElement("img");
-    chat.src = inkBlotImage;
-    chat.classList.add("button");
-    chat.classList.add("inkblotChat");
-    body.appendChild(chat);
+    paper.innerHTML = "";
+    paper.classList.remove("box");
+    paper.classList.remove("inkblotPaper");
+    paper.classList.add("button");
+    paper.classList.add("inkblotChat");
+    
+    const chatImage = document.createElement("img");
+    chatImage.src = inkBlotImage;
+    chatImage.classList.add("inkblotIcon");
+    paper.appendChild(chatImage);
 
-    chat.addEventListener("click", () => {
-        body.removeChild(chat);
-        createPaper();
-    });
+    chatImage.addEventListener("click", createPaper, { once: true });
 }
-
 
 createChat();

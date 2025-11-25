@@ -2,14 +2,36 @@
 Inkblot Chat styling
 */
 
-.inkblotChat {
-    border-radius: 100;
+.inkblotPaper {
     position: fixed;
+    z-index: 1000;
+    width: min(500px, 90vw);
+    height: min(500px, 90vh);
+    bottom: calc(1rem + 16px);
+    right: 16px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    transition: width 2s ease-in-out;
+}
+
+.inkblotChat {
+    position: fixed;
+    z-index: 1000;
     bottom: calc(16px + 1.5rem);
     right: calc(16px + 0.5rem);
+    padding: 0;
+    border-radius: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    height: max-content;
+    width: max-content;
+}
+
+.inkblotIcon {
     width: 75px;
     padding: 0;
-    z-index: 1000;
     border-radius: 100%;
     aspect-ratio: 1;
 }
@@ -29,19 +51,6 @@ Inkblot Chat styling
     max-width: 95%;
     padding: 1em;
     margin-bottom: 0.5em;
-}
-
-.inkblotPaper {
-    width: min(500px, 90vw);
-    height: min(500px, 90vh);
-    position: fixed;
-    bottom: calc(1rem + 16px);
-    right: 16px;
-    z-index: 1000;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0;
 }
 
 .inkblotTitleBar {
