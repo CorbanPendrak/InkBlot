@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="24px"
+   viewBox="0 -960 960 960"
+   width="24px"
+   fill="#000000"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="refresh.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="33.242995"
+     inkscape:cx="11.972447"
+     inkscape:cy="14.093195"
+     inkscape:window-width="1728"
+     inkscape:window-height="978"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:120;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill;stroke-linecap:butt"
+     id="path4"
+     sodipodi:type="arc"
+     sodipodi:cx="477.69461"
+     sodipodi:cy="-479.89883"
+     sodipodi:rx="281.76077"
+     sodipodi:ry="279.35425"
+     sodipodi:start="0.3228171"
+     sodipodi:end="5.9664418"
+     sodipodi:open="true"
+     sodipodi:arc-type="arc"
+     d="M 744.90117,-391.27666 A 281.76077,279.35425 0 0 1 431.99102,-204.24415 281.76077,279.35425 0 0 1 195.93514,-480.74717 281.76077,279.35425 0 0 1 433.68049,-755.82365 281.76077,279.35425 0 0 1 745.43913,-566.91034" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:120;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+     d="M 519.80876,-560.51734 H 759.25772 V -798.76302"
+     id="path5"
+     sodipodi:nodetypes="ccc" />
+</svg>
