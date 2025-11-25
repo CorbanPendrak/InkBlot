@@ -5,7 +5,7 @@ const inkFile = "test";
 import inkBlotImage from "./media/inkblot-5.png";
 import closeImage from "./media/close.svg";
 import refreshImage from "./media/refresh.svg";
-
+import "./inkblot.css"
 
 var story;
 try {
@@ -23,26 +23,12 @@ try {
     } 
 }
 
-/*
-let inkBlotImage = "./media/inkblot-5.png";
-let closeImage = "./media/close.svg";
-let refreshImage = "./media/refresh.svg";
-*/
-let globalTagTheme;
-
 function updateMessages(newMessages, messagesElement) {
     for (var i = 0; i < newMessages.length; i++) {
-        //console.log(((newMessages[i].isButton) ? "- " : "") + newMessages[i].text);
         if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
             const avatar = document.createElement("img");
-            avatar.style = `border-radius: 100%;
-                width: 50px;
-                aspect-ratio: 1;
-                height: 50px;
-                border: 2px solid #000;
-                box-shadow: 4px 4px 0 #000;
-                margin-bottom: 6px;`; 
-            avatar.src = inkBlotImage; //"media/inkblot-" + (Math.floor(Math.random() * 6) + 1) + ".png";
+            avatar.classList.add("inkblotAvatar");
+            avatar.src = inkBlotImage;
             messagesElement.appendChild(avatar);
         }
         messagesElement.appendChild(newMessages[i].element);
@@ -50,75 +36,15 @@ function updateMessages(newMessages, messagesElement) {
     messagesElement.scrollTop = messagesElement.scrollHeight;
 };
 
-function createBlot(text, messages=[]) {
-    const element = document.createElement("div");
-    element.textContent = text;
-    element.classList.add("box");
-
-    var isButton = false;
-    if (messages.length) {
-        isButton = true;
-        element.classList.add("button");
-        element.style = `width: fit-content;
-            max-width: 95%;
-            padding: 1em;
-            margin-bottom: 0.5em;
-            align-self: flex-end;`;
-        function callBack() {
-            if (isButton) {
-                // Remove other user options
-                var sibling = element.nextSibling;
-                while (sibling) {
-                    if (!sibling.classList.contains("button")) {
-                        break;
-                    }
-                    element.parentElement.removeChild(sibling);
-                    sibling = sibling.nextSibling;
-                }
-
-                var sibling = element.previousSibling;
-                while (sibling) {
-                    if (!sibling.classList.contains("button")) {
-                        break;
-                    }
-                    element.parentElement.removeChild(sibling);
-                    sibling = element.previousSibling;
-                }
-
-                updateMessages(messages, element.parentElement);
-                element.classList.remove("button");
-                this.removeEventListener("click", callBack);
-            }
-        }
-        element.addEventListener("click", callBack);
-    } else {
-        element.style = `width: fit-content;
-            max-width: 95%;
-            padding: 1em;
-            margin-bottom: 0.5em;`;
-    }
-
-    return {text, element, isButton};
-}
-
 function createInkBlot(text, isButton=false) {
     const element = document.createElement("div");
     element.innerHTML = text;
     element.classList.add("box");
+    element.classList.add("choice");
 
     if (isButton) {
         element.classList.add("button");
-        element.classList.add("choice");
-        element.style = `width: fit-content;
-            max-width: 95%;
-            padding: 1em;
-            margin-bottom: 0.5em;
-            align-self: flex-end;`;
-    } else {
-        element.style = `width: fit-content;
-            max-width: 95%;
-            padding: 1em;
-            margin-bottom: 0.5em;`;
+        element.style = `align-self: flex-end;`;
     }
 
     return {text, element, isButton};
@@ -129,36 +55,21 @@ function createPaper() {
     const body = document.querySelector("body");
     const paper = document.createElement("div");
     paper.classList.add("box");
-    paper.style = `width: min(500px, 90vw);
-        height: min(500px, 90vh);
-        position: fixed;
-        bottom: calc(1rem + 16px);
-        right: 16px;
-        z-index: 1000;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 0;`;
+    paper.classList.add("inkblotPaper");
     body.appendChild(paper);
 
     // Title
     const titleBar = document.createElement("div");
-    titleBar.style = `display: flex;
-        justify-content: space-between;
-        padding: 0 0.5em;`;
+    titleBar.classList.add("inkblotTitleBar");
 
     const title = document.createElement("div");
     title.textContent = titleText;
-    title.style = `text-align: center;
-        font-weight: 700;
-        font-size: 1.5em;`;
+    title.classList.add('inkblotTitle');
     titleBar.appendChild(title);
 
     // Reset/Close buttons
     const chatButtons = document.createElement("div");
-    chatButtons.style = `display: flex;
-        gap: 10px;
-        font-size: 1.5em;`;
+    chatButtons.classList.add("inkblotChatButtons");
     const refresh = document.createElement("img");
     refresh.src = refreshImage;
     refresh.style.width = "1.2em";
@@ -180,77 +91,16 @@ function createPaper() {
 
     // Separation bar
     const bar = document.createElement("hr");
-    bar.style = `border-radius: 0;
-        border: 2px solid #000;
-        margin: 10px 0;`;
+    bar.classList.add("inkblotBar");
     paper.appendChild(bar);
-
-    // Scrollbar Style
-    const scrollbarStyle = document.createElement("style");
-    scrollbarStyle.innerHTML = `
-        ::-webkit-scrollbar {
-            width: 5px; 
-        }
-        ::-webkit-scrollbar-track {
-            background: #fff;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #000;
-            border-radius: 0;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #000;
-        }
-    `;
-    paper.appendChild(scrollbarStyle);
 
     // Message area
     const messagesElement = document.createElement("div");
     messagesElement.classList.add("box");
-    messagesElement.style = `overflow: auto;
-        flex-grow: 1;
-        margin-bottom: 0;
-        display: flex;
-        flex-direction: column;
-        padding-left: 0.5em;`;
+    messagesElement.classList.add("inkblotMessagesElement");
     paper.appendChild(messagesElement);
 
     // Todo: Setup buttons?
-
-    // Add intro message
-    function start() {
-        messagesElement.innerHTML = "";
-        var newMessages = [];
-        newMessages.push(createBlot("Welcome to InkBlot!"));
-        newMessages.push(createBlot("This is a small demo of the chat application feature. Currently, it is not connected to Ink, so everything is hardcoded. That, however, will change soon!"));
-        newMessages.push(createBlot("Wow, cool!", [
-            createBlot("I know, right?"), 
-            createBlot("Wait, so are you some kind of AI?", [
-                createBlot("No, I am hardcoded into this chat interface, so I am not AI."),
-                createBlot("Maybe someone wrote this flow with AI, but this conversation flow was designed to help answer your questions about this awesome website."),
-                createBlot("Oh, I guess that makes since.", [
-                    createBlot("But I haven't gotten many options...", [
-                        createBlot("Well, this is still in development. :)")
-                    ]),
-                ]),
-            ]),
-        ]));
-        newMessages.push(createBlot("Eh, I have seen this stuff before.", [
-            createBlot("Sure, you have probably seen chat interfaces on many websites, \
-                especially ones that can connect you with a \"helpful assistant\", but I am something different. \
-                I am powered by the powerful markdown like language of Ink, allowing a more conversational narrative \
-                to the website."),
-            createBlot("Sure, whatever.", [
-                createBlot("..."),
-            ]),
-            createBlot("I guess this is kind of interesting.", [
-                createBlot("Exactly! This allows for developers to create a chat application with a carefully \
-                    worded flow for their website!"),
-            ])
-        ]));
-
-        updateMessages(newMessages, messagesElement);
-    }
 
     continueStory(true);
 
@@ -348,11 +198,6 @@ function createPaper() {
                 continue;
             }
 
-            // Create paragraph element
-            //var paragraphElement = document.createElement('p');
-            //paragraphElement.innerHTML = paragraphText;
-            //messagesElement.appendChild(paragraphElement);
-
             for (var i = 0; i < customClasses.length; i++) {
                 message.element.classList.add(customClasses[i]);
             }
@@ -360,8 +205,6 @@ function createPaper() {
             newMessages.push(message);
 
             // Todo: fade in timer
-            //showAfter(delay, paragraphElement);
-            //delay += 200.0;
         }
 
         // Create choices
@@ -383,83 +226,49 @@ function createPaper() {
                 }
             }
 
-            /*
-            var choiceParagraphElement = document.createElement('p');
-            choiceParagraphElement.classList.add('choice');
-            
-            for (var i = 0; i < customClasses.length; i++) {
-                choiceParagraphElement.classList.add(customClasses[i]);
-            }
-
-            if (isClickable) {
-                choiceParagraphElement.innerHTML = `<a href='#'>${choice.text}</a>`;
-            } else {
-                choiceParagraphElement.innerHTML = `<span class='unclickable'>${choice.text}</span>`;
-            }
-            messagesElement.appendChild(choiceParagraphElement);
-            */
-
             let message = createInkBlot(choice.text, true);
             newMessages.push(message);
 
             // Todo: fade in choices
-            //showAfter(delay, choiceParagraphElement);
-            //delay += 200.0;
 
             if (isClickable) {
-                //var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
                 let element = message.element;
                 function callBack() {
-                // Don't follow <a> link
-                //event.preventDefault();
 
-                // Extend height to fit
-                // We do this manually so that removing elements and creating new ones doesn't
-                // cause the height (and therefore scroll) to jump backwards temporarily.
-                //messagesElement.style.height = contentBottomEdgeY()+"px";
+                    // Tell the story where to go next
+                    story.ChooseChoiceIndex(choice.index);
 
-                // Remove all existing choices
-                //removeAll(".choice");
+                    // And loop
+                    continueStory();
 
-                // Tell the story where to go next
-                story.ChooseChoiceIndex(choice.index);
-
-                // And loop
-                continueStory();
-
-                // Remove other user options
-                var sibling = element.nextSibling;
-                while (sibling) {
-                    if (!sibling.classList.contains("button")) {
-                        break;
+                    // Remove other user options
+                    var sibling = element.nextSibling;
+                    while (sibling) {
+                        if (!sibling.classList.contains("button")) {
+                            break;
+                        }
+                        element.parentElement.removeChild(sibling);
+                        sibling = sibling.nextSibling;
                     }
-                    element.parentElement.removeChild(sibling);
-                    sibling = sibling.nextSibling;
+
+                    var sibling = element.previousSibling;
+                    while (sibling) {
+                        if (!sibling.classList.contains("button")) {
+                            break;
+                        }
+                        element.parentElement.removeChild(sibling);
+                        sibling = element.previousSibling;
+                    }
+
+                    element.classList.remove("button");
+                    this.removeEventListener("click", callBack);
                 }
 
-                var sibling = element.previousSibling;
-                while (sibling) {
-                    if (!sibling.classList.contains("button")) {
-                        break;
-                    }
-                    element.parentElement.removeChild(sibling);
-                    sibling = element.previousSibling;
-                }
-
-                element.classList.remove("button");
-                this.removeEventListener("click", callBack);
-            }
-            element.addEventListener("click", callBack);
+                element.addEventListener("click", callBack);
             }
         });
 
         updateMessages(newMessages, messagesElement);
-
-        // Unset messagesElement's height, allowing it to resize itself
-		//messagesElement.style.height = "";
-
-        //if( !firstTime )
-        //    scrollDown(previousBottomEdge);
     }
 
     // Scrolls the page down, but no further than the bottom edge of what you could
@@ -570,15 +379,7 @@ function createChat() {
     const chat = document.createElement("img");
     chat.src = inkBlotImage;
     chat.classList.add("button");
-    chat.style = `border-radius: 100;
-        position: fixed;
-        bottom: calc(16px + 1.5rem);
-        right: calc(16px + 0.5rem);
-        width: 75px;
-        padding: 0;
-        z-index: 1000;
-        border-radius: 100%;
-        aspect-ratio: 1;`;
+    chat.classList.add("inkblotChat");
     body.appendChild(chat);
 
     chat.addEventListener("click", () => {
