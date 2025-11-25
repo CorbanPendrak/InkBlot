@@ -25,8 +25,9 @@ Idea: Name the whole project Lil' InkBlot?
   - [ ] Avatar thinking
 - [ ] Configure webpack
 - [ ] Ink
-  - [ ] Connect Ink backend
-  - [ ] Compile ink
+  - [x] Connect Ink backend
+  - [x] Compile ink
+  - [x] Save compiled ink
 - [ ] Link macros
 - [ ] Improve styling configuration
   - [ ] Optional showing user messages

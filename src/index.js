@@ -1,25 +1,38 @@
 // InkChat code
 const titleText = "InkChat";
+const inkFile = "test";
 
-/*
 import inkBlotImage from "./media/inkblot-5.png";
 import closeImage from "./media/close.svg";
 import refreshImage from "./media/refresh.svg";
 
-import { storyContent } from "./inkblot-index.js";
-import { Story } from "./ink.js";
-*/
 
+var story;
+try {
+    require(`./inkblot-${inkFile}.js`);
+    require("./ink.js");
+    story = new inkjs.Story(storyContent);
+} catch (exception) {
+    try {
+    const inkjs = require('inkjs/full');
+    const data = require(`./${inkFile}.ink`);
+    story = new inkjs.Compiler(data).Compile();
+    } catch (exception2) {
+        console.log(exception);
+        console.log(exception2);
+    } 
+}
+
+/*
 let inkBlotImage = "./media/inkblot-5.png";
 let closeImage = "./media/close.svg";
 let refreshImage = "./media/refresh.svg";
-
-var story = new inkjs.Story(storyContent);
+*/
 let globalTagTheme;
 
 function updateMessages(newMessages, messagesElement) {
     for (var i = 0; i < newMessages.length; i++) {
-        console.log(((newMessages[i].isButton) ? "- " : "") + newMessages[i].text);
+        //console.log(((newMessages[i].isButton) ? "- " : "") + newMessages[i].text);
         if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
             const avatar = document.createElement("img");
             avatar.style = `border-radius: 100%;
@@ -37,7 +50,7 @@ function updateMessages(newMessages, messagesElement) {
     messagesElement.scrollTop = messagesElement.scrollHeight;
 };
 
-function createInkBlot(text, messages=[]) {
+function createBlot(text, messages=[]) {
     const element = document.createElement("div");
     element.textContent = text;
     element.classList.add("box");
@@ -208,30 +221,30 @@ function createPaper() {
     function start() {
         messagesElement.innerHTML = "";
         var newMessages = [];
-        newMessages.push(createInkBlot("Welcome to InkBlot!"));
-        newMessages.push(createInkBlot("This is a small demo of the chat application feature. Currently, it is not connected to Ink, so everything is hardcoded. That, however, will change soon!"));
-        newMessages.push(createInkBlot("Wow, cool!", [
-            createInkBlot("I know, right?"), 
-            createInkBlot("Wait, so are you some kind of AI?", [
-                createInkBlot("No, I am hardcoded into this chat interface, so I am not AI."),
-                createInkBlot("Maybe someone wrote this flow with AI, but this conversation flow was designed to help answer your questions about this awesome website."),
-                createInkBlot("Oh, I guess that makes since.", [
-                    createInkBlot("But I haven't gotten many options...", [
-                        createInkBlot("Well, this is still in development. :)")
+        newMessages.push(createBlot("Welcome to InkBlot!"));
+        newMessages.push(createBlot("This is a small demo of the chat application feature. Currently, it is not connected to Ink, so everything is hardcoded. That, however, will change soon!"));
+        newMessages.push(createBlot("Wow, cool!", [
+            createBlot("I know, right?"), 
+            createBlot("Wait, so are you some kind of AI?", [
+                createBlot("No, I am hardcoded into this chat interface, so I am not AI."),
+                createBlot("Maybe someone wrote this flow with AI, but this conversation flow was designed to help answer your questions about this awesome website."),
+                createBlot("Oh, I guess that makes since.", [
+                    createBlot("But I haven't gotten many options...", [
+                        createBlot("Well, this is still in development. :)")
                     ]),
                 ]),
             ]),
         ]));
-        newMessages.push(createInkBlot("Eh, I have seen this stuff before.", [
-            createInkBlot("Sure, you have probably seen chat interfaces on many websites, \
+        newMessages.push(createBlot("Eh, I have seen this stuff before.", [
+            createBlot("Sure, you have probably seen chat interfaces on many websites, \
                 especially ones that can connect you with a \"helpful assistant\", but I am something different. \
                 I am powered by the powerful markdown like language of Ink, allowing a more conversational narrative \
                 to the website."),
-            createInkBlot("Sure, whatever.", [
-                createInkBlot("..."),
+            createBlot("Sure, whatever.", [
+                createBlot("..."),
             ]),
-            createInkBlot("I guess this is kind of interesting.", [
-                createInkBlot("Exactly! This allows for developers to create a chat application with a carefully \
+            createBlot("I guess this is kind of interesting.", [
+                createBlot("Exactly! This allows for developers to create a chat application with a carefully \
                     worded flow for their website!"),
             ])
         ]));
