@@ -1,11 +1,5 @@
-# InkChat
-This is a JavaScript library/tool to include chat functionality on a website powered by the Ink markdown language.
-
-## Naming
-Naming important things is fun, but here is the mapping:
-Paper -> Conversation window
-InkBlot -> Message in a conversation
-Idea: Name the whole project Lil' InkBlot?
+# InkBlot
+This is a JavaScript library/tool to include chat functionality on a website powered by the Ink markdown language. It is still in development, and you can check progress on the roadmap below. 
 
 ## Todo
 - [x] Setup repo

@@ -1,6 +1,6 @@
-// InkChat code
-const titleText = "InkChat";
-const inkFile = "test";
+// InkBlot code
+const titleText = "InkBlot";
+const inkFile = "index";
 
 import inkBlotImage from "./media/inkblot-5.png";
 import closeImage from "./media/close.svg";
@@ -9,7 +9,7 @@ import "./inkblot.css"
 
 var story;
 try {
-    require(`./inkblot-${inkFile}.js`);
+    storyContent = require(`./${inkFile}.json`);
     require("./ink.js");
     story = new inkjs.Story(storyContent);
 } catch (exception) {
