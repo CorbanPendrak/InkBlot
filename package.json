@@ -14,9 +14,9 @@
     "build": "webpack --config webpack.prod.js",
     "dev": "webpack serve --config webpack.dev.js --port 50",
     "clean": "rm -rf dist/",
-    "predeploy": "git checkout gh-pages && git merge master --no-edit; webpack --config webpack.prod.js",
+    "predeploy": "git checkout gh-pages && git merge main --no-edit; webpack --config webpack.prod.js",
     "deploy": "git add dist -f && git commit -m \"Deployment commit\"; git subtree push --prefix dist origin gh-pages",
-    "postdeploy": "rm -rf dist/; git checkout master"
+    "postdeploy": "rm -rf dist/; git checkout main"
   },
   "dependencies": {
     "inkjs": "^2.3.2",

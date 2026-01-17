@@ -1,6 +1,10 @@
 # InkBlot
 This is a JavaScript library/tool to include chat functionality on a website powered by the Ink markdown language. It is still in development, and you can check progress on the roadmap below. 
 
+# Animation Notes
+max-content does not work with transitioning width/height.
+
+
 ## Todo
 - [x] Setup repo
 - [x] Create mockup
@@ -10,13 +14,15 @@ This is a JavaScript library/tool to include chat functionality on a website pow
   - [x] Buttons
   - [x] Scrollbar
 - [ ] Add animations
-  - [ ] Paper expanding
+  - [x] Paper expanding/collapsing
   - [ ] InkBlot typing
+  - [ ] Option pause
   - [ ] Loading for long InkBlots
   - [ ] Scrolling
   - [ ] Custom scrollbar height
   - [ ] Reset/close buttons
   - [ ] Avatar thinking
+  - [ ] Reduce motion option
 - [x] Configure webpack
 - [x] Ink
   - [x] Connect Ink backend

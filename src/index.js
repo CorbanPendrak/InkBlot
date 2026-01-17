@@ -110,6 +110,12 @@ function createPaper() {
     messagesElement.classList.add("inkblotMessagesElement");
     paper.appendChild(messagesElement);
 
+    // Trigger CSS transitions by forcing a reflow before setting final opacity
+    messagesElement.offsetHeight;
+    titleBar.style.opacity = "1";
+    bar.style.opacity = "1";
+    messagesElement.style.opacity = "1";
+
     // Todo: Setup buttons?
 
     continueStory(true);
@@ -395,6 +401,9 @@ function createChat() {
     chatImage.src = inkBlotImage;
     chatImage.classList.add("inkblotIcon");
     paper.appendChild(chatImage);
+
+    chatImage.offsetHeight;
+    chatImage.style.opacity = "1";
 
     chatImage.addEventListener("click", createPaper, { once: true });
 }
