@@ -20,7 +20,7 @@ max-content does not work with transitioning width/height.
   - [ ] Loading for long InkBlots
   - [ ] Scrolling
   - [ ] Custom scrollbar height
-  - [ ] Reset/close buttons
+  - [x] Reset/close buttons
   - [ ] Avatar thinking
   - [ ] Reduce motion option
 - [x] Configure webpack
@@ -36,4 +36,6 @@ max-content does not work with transitioning width/height.
   - [ ] Library
   - [ ] CDN
   - [ ] Website for customizing widget
-- [ ] Convert to Typescript
+- [ ] Optional
+  - [ ] Convert to Typescript
+  - [ ] Animaion library?

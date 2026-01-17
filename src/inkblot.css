@@ -88,6 +88,23 @@ Inkblot Chat styling
     font-size: 1.5em;
 }
 
+.inkblotChatButtons img {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.inkblotChatButtons img:hover {
+    transform:
+        scale(1.3)
+        rotate(8deg);
+}
+
+.inkblotChatButtons img:active {
+    transform:
+        scale(0.9)
+        rotate(-8deg);
+}
+
 .inkblotBar {
     border-radius: 0;
     border: 2px solid #000;
@@ -109,7 +126,6 @@ Inkblot Chat styling
 ::-webkit-scrollbar-thumb:hover {
     background: #000;
 }
-
 
 .inkblotMessagesElement {
     overflow: auto;
