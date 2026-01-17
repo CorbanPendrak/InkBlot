@@ -1,8 +1,13 @@
 // InkBlot code
 const titleText = "InkBlot";
 const inkFile = "index";
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const thinkingTime = 1;
+const charsPerSecond = prefersReducedMotion ? 1000 : 30;
+const randomizeEnd = prefersReducedMotion ? 1 : 2;
+const randomizeEndSize = prefersReducedMotion ? 1 : 2;
 
-import inkBlotImage from "./media/inkblot-5.png";
+import inkBlotImage from "./media/inkblot-4.png";
 import closeImage from "./media/close.svg";
 import refreshImage from "./media/refresh.svg";
 import "./inkblot.css"
@@ -30,29 +35,116 @@ paper.classList.add("button");
 paper.classList.add("box");
 paper.classList.add("inkblotPaper");
 body.appendChild(paper);
+//document.documentElement.style.setProperty("--thinkingTime", str(thinkingTime) + "s");
 
 function updateMessages(newMessages, messagesElement) {
+    let lastAvatar = null;
+
     for (var i = 0; i < newMessages.length; i++) {
         if ((i == 0 && !newMessages[i].isButton) || i > 0 && !newMessages[i].isButton && newMessages[i-1].isButton) {
-            const avatar = document.createElement("img");
+            const avatar = document.createElement('div');
+            const avatarImg = document.createElement("img");
+            avatarImg.src = inkBlotImage;
+            avatar.appendChild(avatarImg);
             avatar.classList.add("inkblotAvatar");
-            avatar.src = inkBlotImage;
+            avatar.classList.add("spinning");
+            avatar.style.setProperty("--thinkingTime", String(thinkingTime) + "s");
             messagesElement.appendChild(avatar);
+            lastAvatar = avatar;
         }
         messagesElement.appendChild(newMessages[i].element);
     }
-    messagesElement.scrollTop = messagesElement.scrollHeight;
+    
+    if (lastAvatar) {
+        lastAvatar.scrollIntoView({ behavior: 'smooth', block: 'end'});
+    }
+
+    // Thinking
+    setTimeout(() => {
+        if (lastAvatar) {
+            lastAvatar.classList.remove("spinning");
+        }
+
+
+        let choiceDelay = 0;
+        for (var i = 0; i < newMessages.length; i++) {
+            if (!newMessages[i].isButton) {
+                newMessages[i].element.offsetHeight;
+                newMessages[i].element.style.transitionDelay = `${choiceDelay}s`;
+                newMessages[i].element.style.opacity = "1";
+                newMessages[i].element.style.transform = "translateY(0px)";
+
+                const message = newMessages[i];
+                const text = message.text;
+                const element = message.element;
+                
+                const totalDuration = text.length / charsPerSecond;
+
+                let charIndex = 0;
+                let count = 0;
+                setTimeout(() => {
+                    const typeInterval = setInterval(() => {
+                        if (count != 0) {
+                            let randomChars = '';
+                            for (let j = 0; j < randomizeEndSize; j++) {
+                                randomChars += randomLetter();
+                            }
+                            element.innerHTML = text.substring(0, charIndex) + randomChars;
+                        } else if (charIndex == text.length - randomizeEndSize) {
+                            element.innerHTML = text
+                            messagesElement.scrollTop = messagesElement.scrollHeight;
+                            clearInterval(typeInterval);
+                        } else if (charIndex < text.length) {
+                            charIndex++;
+                            element.innerHTML = text.substring(0, charIndex);
+
+                            messagesElement.scrollTop = messagesElement.scrollHeight;
+                        } else {
+                            element.innerHTML = text
+                            clearInterval(typeInterval);
+                        }
+                        count = (count + 1) % randomizeEnd
+                    }, (1000 / charsPerSecond) / randomizeEnd)
+                }, choiceDelay * 1000);
+
+                choiceDelay += totalDuration + 0.75;
+            }
+        }
+
+        for (var i = 0; i < newMessages.length; i++) {
+            newMessages[i].element.offsetHeight;
+            
+            newMessages[i].element.style.transitionDelay = `${choiceDelay}s`;
+            choiceDelay += 0.5;
+            
+            newMessages[i].element.style.opacity = "1";
+            newMessages[i].element.style.transform = "translateY(0px)";
+        }
+
+        // Scroll to show avatar on top
+        if (lastAvatar) {
+            lastAvatar.scrollIntoView({ behavior: 'smooth', block: 'start'});
+        } else {
+            messagesElement.scrollTop = messagesElement.scrollHeight;
+        }
+    }, thinkingTime * 1000);
 };
+
+function randomLetter() {
+    return String.fromCharCode(33 + Math.floor(Math.random() * 94))
+}
 
 function createInkBlot(text, isButton=false) {
     const element = document.createElement("div");
-    element.innerHTML = text;
     element.classList.add("box");
     element.classList.add("choice");
 
     if (isButton) {
+        element.innerHTML = text;
         element.classList.add("button");
         element.style = `align-self: flex-end;`;
+    } else {
+        element.classList.add("typewriter");
     }
 
     return {text, element, isButton};
@@ -124,8 +216,6 @@ function createPaper() {
         var paragraphIndex = 0;
         var delay = 0.0;
 
-        var previousBottomEdge = firstTime ? 0 : contentBottomEdgeY();
-
         var newMessages = [];
         while (story.canContinue) {
             var paragraphText = story.Continue();
@@ -169,12 +259,6 @@ function createPaper() {
                     imageElement.src = splitTag.val;
                     messagesElement.appendChild(imageElement);
 
-                    imageElement.onload = () => {
-                        console.log(`scrollingto ${previousBottomEdge}`)
-                        //scrollDown(previousBottomEdge)
-                    }
-
-                    showAfter(delay, imageElement);
                     delay += 200.0;
                 }
 
@@ -287,43 +371,6 @@ function createPaper() {
         updateMessages(newMessages, messagesElement);
     }
 
-    // Scrolls the page down, but no further than the bottom edge of what you could
-    // see previously, so it doesn't go too far.
-    function scrollDown(previousBottomEdge) {
-        // If the user doesn't want animations, let them scroll manually
-        if ( !isAnimationEnabled() ) {
-            return;
-        }
-
-        // Line up top of screen with the bottom of where the previous content ended
-        var target = previousBottomEdge;
-
-        // Can't go further than the very bottom of the page
-        var limit = outerScrollContainer.scrollHeight - outerScrollContainer.clientHeight;
-        if( target > limit ) target = limit;
-
-        var start = outerScrollContainer.scrollTop;
-
-        var dist = target - start;
-        var duration = 300 + 300*dist/100;
-        var startTime = null;
-        function step(time) {
-            if( startTime == null ) startTime = time;
-            var t = (time-startTime) / duration;
-            var lerp = 3*t*t - 2*t*t*t; // ease in/out
-            outerScrollContainer.scrollTo(0, (1.0-lerp)*start + lerp*target);
-            if( t < 1 ) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-    }
-
-    // The Y coordinate of the bottom end of all the story content, used
-    // for growing the container, and deciding how far to scroll.
-    function contentBottomEdgeY() {
-        var bottomElement = messagesElement.lastElementChild;
-        return bottomElement ? bottomElement.offsetTop + bottomElement.offsetHeight : 0;
-    }
-
     // Remove all elements that match the given selector. Used for removing choices after
     // you've picked one, as well as for the CLEAR and RESTART tags.
     function removeAll(selector)
@@ -363,22 +410,6 @@ function createPaper() {
         }
 
         return null;
-    }
-
-    // Detects whether the user accepts animations
-    function isAnimationEnabled() {
-        return window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-    }
-
-    // Fades in an element after a specified delay
-    function showAfter(delay, el) {
-        if (isAnimationEnabled()) {
-            el.classList.add("hide");
-            setTimeout(function() { el.classList.remove("hide") }, delay);
-        } else {
-            // If the user doesn't want animations, show immediately
-            el.classList.remove("hide");
-        }
     }
 
     function restart() {

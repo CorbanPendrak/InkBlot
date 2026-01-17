@@ -15,14 +15,14 @@ max-content does not work with transitioning width/height.
   - [x] Scrollbar
 - [ ] Add animations
   - [x] Paper expanding/collapsing
-  - [ ] InkBlot typing
-  - [ ] Option pause
-  - [ ] Loading for long InkBlots
-  - [ ] Scrolling
-  - [ ] Custom scrollbar height
+  - [x] InkBlot typing
+  - [x] Option pause
+  - [x] Loading for long InkBlots
+  - [x] Scrolling
+  - [x] Custom scrollbar height
   - [x] Reset/close buttons
-  - [ ] Avatar thinking
-  - [ ] Reduce motion option
+  - [x] Avatar thinking
+  - [x] Reduce motion option
 - [x] Configure webpack
 - [x] Ink
   - [x] Connect Ink backend
